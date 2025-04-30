@@ -51,4 +51,4 @@ jobs:
         if: github.ref == 'refs/heads/main'
         steps:
             - name: deploy to main
-              run: echo "deploying to production....."
+              run: echo "deploying to production........"
