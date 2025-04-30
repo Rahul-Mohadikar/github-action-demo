@@ -1,0 +1,54 @@
+name: CICD pipeline
+
+on:
+    push:
+        branches:
+            - dev
+            - QA
+            - main
+    pull-request:
+        branches:
+            - dev
+            - QA
+            - main
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: set up node.js
+              uses: actions/setup-node@v4
+                with:
+                    node-version: '18'
+            
+            - name: install dependencies
+              run: npm install
+
+            - name: Run test
+              run: npm test
+    
+    deploy-dev:
+        needs: build
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/dev'
+        steps:
+            - name: deploy to development
+              run: echo "deploying to dev....."
+            
+    deploy-QA:
+        needs: build
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/QA'
+        steps:
+            - name: deploy to QA
+              run: echo "deploying to QA....."
+
+    deploy-prod:
+        needs: build
+        runs-on: latest
+        if: github.ref == 'refs/heads/main'
+        steps:
+            - name: deploy to main
+              run: echo "deploying to production....."
